@@ -1,6 +1,6 @@
 package com.plcoding.koinguide.ui
 
-import com.plcoding.koinguide.Article
+import com.example.newsapp.News.Article
 
 sealed class NewsState {
     data class NewsResponse(

@@ -1,0 +1,23 @@
+package com.example.newsapp.Comments
+
+
+// This combines the activites here
+private fun summarizedNotifications() {
+    viewModelScope.launch {
+        val likesActivity: Flow<Like> = flowOf(*likesList.toTypedArray()).onEach {
+                delay(50)
+            }
+        val commentsActivity: Flow<Comment> = flowOf(*commentsList.toTypedArray()).onEach {
+            delay(200)
+        }
+        val postsActivity: Flow<Post> = flowOf(*postsList.toTypedArray()).onEach {
+            delay(100)
+        }
+        likesActivity.combine(commentsActivity) { like, comment ->
+            "${like.userName} reacted with ${like.reactionName} on ${like.postTitle}\n" +
+                    "and ${comment.userName} commented ${comment.commentText} on ${comment.postTitle}"
+        }.combine(postsActivity) { activity, post ->
+            Log.i("Notification", "$activity .. Also ${post.userName} added a new post '${post.postTitle}'")
+        }.collect()
+    }
+}

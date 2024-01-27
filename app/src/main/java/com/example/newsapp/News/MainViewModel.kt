@@ -1,4 +1,4 @@
-package com.plcoding.koinguide
+package com.example.newsapp.News
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,28 +38,34 @@ class MainViewModel(
     var _newsFlow = MutableStateFlow<NewsState>(NewsState.Loading)
     val newsFlow = _newsFlow.asStateFlow()
 
+    private val sortFlow = MutableStateFlow(SortType.NONE)
+
     // This will then display on the answer before
     val searchResults =
-        searchText
-            .debounce(1000L)
-            .onEach { _isSearching.update { true } }
-            .combine(_newsFlow) { text, news ->
-                if (text.isBlank()) {
-                    news
-                } else {
-                    delay(1000L)
-                    if (news is NewsState.NewsResponse) {
-                       val ans = news.articles.filter {
-                            it.content?.contains(text) == true
-                        }
-                        println("the size is ${ans.size}")
-                        NewsState.NewsResponse(ans)
-                    } else {
-                        news
+        combine(
+            searchText
+                .debounce(1000L)
+                .onEach
+                { _isSearching.update { true } }, _newsFlow
+        )
+        { text, news ->
+            if (text.isBlank()) {
+                news
+            } else {
+                delay(1000L)
+                if (news is NewsState.NewsResponse) {
+                    val ans = news.articles.filter {
+                        it.content?.contains(text) == true
                     }
+
+                    println("the size is ${ans.size}")
+                    applySort(NewsState.NewsResponse(ans))
+                } else {
+                    news
                 }
+
             }
-            .onEach { _isSearching.update { false } }
+        }.onEach { _isSearching.update { false } }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
@@ -83,6 +89,25 @@ class MainViewModel(
             }
         }
     }
+
+    fun applySort(state: NewsState.NewsResponse): NewsState {
+        return when (sortFlow.value) {
+
+            SortType.DATE -> {
+                val updatedList = state.articles.sortedBy { it.publishedAt }
+                NewsState.NewsResponse(updatedList)
+            }
+
+            SortType.NAME -> {
+                val updatedList = state.articles.sortedBy { it.title }
+                NewsState.NewsResponse(updatedList)
+            }
+
+            SortType.NONE -> state
+
+        }
+    }
+
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text

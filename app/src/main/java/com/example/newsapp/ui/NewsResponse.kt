@@ -1,6 +1,6 @@
 package com.plcoding.koinguide.ui
 
-import com.plcoding.koinguide.Article
+import com.example.newsapp.News.Article
 
 data class NewsResponse(
     val articles: List<Article>,

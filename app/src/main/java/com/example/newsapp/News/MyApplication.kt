@@ -1,4 +1,4 @@
-package com.plcoding.koinguide
+package com.example.newsapp.News
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext

@@ -1,8 +1,9 @@
-package com.plcoding.koinguide
+package com.example.newsapp.News
 
+import com.example.newsapp.Comments.CommentsApi
+import com.example.newsapp.Comments.CommentsViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -18,6 +19,15 @@ val appModule = module {
             .build()
             .create(MyApi::class.java)
     }
+
+    // For the comment section here
+    single {
+        Retrofit.Builder()
+            .baseUrl("https://jsonplaceholder.typicode.com")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(CommentsApi::class.java)
+    }
     single(named("IODispatcher")) {
         Dispatchers.IO
     }
@@ -32,6 +42,9 @@ val appModule = module {
 //    }
     viewModel {
         MainViewModel(get(), get(named("IODispatcher")))
+    }
+    viewModel {
+        CommentsViewModel(get())
     }
 }
 

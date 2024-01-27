@@ -1,4 +1,4 @@
-package com.plcoding.koinguide
+package com.example.newsapp.News
 
 
 data class Article(

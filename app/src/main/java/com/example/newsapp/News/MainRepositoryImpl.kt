@@ -1,4 +1,4 @@
-package com.plcoding.koinguide
+package com.example.newsapp.News
 
 import com.plcoding.koinguide.ui.NewsResponse
 import kotlinx.coroutines.flow.catch
@@ -18,9 +18,6 @@ class MainRepositoryImpl(
         emit(Result.success(api.getBreakingNews(countryCode, pageNumber)))
     }.catch {
         emit(Result.failure(it))
-//        emit(error("an errror "))
-        println("${it.message} message")
-        println("${it.printStackTrace()} error happened")
     }.first()
 }
 

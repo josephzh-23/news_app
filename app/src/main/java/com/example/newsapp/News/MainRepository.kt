@@ -1,7 +1,6 @@
-package com.plcoding.koinguide
+package com.example.newsapp.News
 
 import com.plcoding.koinguide.ui.NewsResponse
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
